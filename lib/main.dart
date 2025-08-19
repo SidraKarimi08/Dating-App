@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:test123/onboarding_screen.dart';
+import 'Screens/Profile/chat_detail_screen.dart';
+import 'Screens/Profile/profile_detail_screen.dart';
+import 'Screens/home_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -20,7 +22,10 @@ class MyApp extends StatelessWidget {
 
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: const OnboardingScreen(),
+    //home: OnboardingScreen  (),
+      home:  ChatDetailScreen (),
+
+
     );
   }
 }
