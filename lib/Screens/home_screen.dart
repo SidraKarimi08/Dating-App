@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'Profile/detail_profile_screen.dart';
 import 'Profile/matching_screen.dart';
 import 'Profile/message_screen.dart';
-import 'Profile/profile_detail_screen.dart';
 import 'home/main_screen.dart';
 
 
@@ -19,7 +19,7 @@ class _HomeScreenState extends State<HomeScreen> {
     MainScreen(),
     MatchingScreen(),
     MessagesScreen(),
-    ProfileDetailScreen (),
+    ProfileDetailScreen(),
   ];
 
   final List<IconData> iconList = [

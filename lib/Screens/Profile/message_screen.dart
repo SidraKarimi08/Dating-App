@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:test123/Screens/Profile/stories_screen.dart';
 import 'package:test123/utils/common/textStyle.dart'; // GTextStyle
-import 'package:test123/utils/common/filters.dart'; // FiltersIcon
+import 'package:test123/utils/common/filters.dart';
+
+import 'chat_detail_screen.dart'; // FiltersIcon
 
 class MessagesScreen extends StatelessWidget {
   const MessagesScreen({super.key});
@@ -51,7 +54,7 @@ class MessagesScreen extends StatelessWidget {
       backgroundColor: Colors.white,
       body: SafeArea(
         child: ListView(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          padding:  EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           children: [
             // Header
             Row(
@@ -176,17 +179,21 @@ class _ActivityBubble extends StatelessWidget {
     return Column(
       children: [
         // simple ring around avatar
-        Container(
-          padding: const EdgeInsets.all(2.2),
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            border: Border.all(color: const Color(0xFFFFC107), width: 2),
-          ),
-          child: CircleAvatar(
-            radius: 28,
-            backgroundColor: Colors.grey.shade200,
-            backgroundImage: AssetImage(data.avatarAsset),
-            onBackgroundImageError: (_, __) {},
+        InkWell(onTap: (){
+          Navigator.push(context, MaterialPageRoute(builder: (context) =>StoryScreen() ,));
+        },
+          child: Container(
+            padding: const EdgeInsets.all(2.2),
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(color: const Color(0xFFFFC107), width: 2),
+            ),
+            child: CircleAvatar(
+              radius: 28,
+              backgroundColor: Colors.grey.shade200,
+              backgroundImage: AssetImage(data.avatarAsset),
+              onBackgroundImageError: (_, __) {},
+            ),
           ),
         ),
         const SizedBox(height: 6),
@@ -223,7 +230,7 @@ class _ChatTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       onTap: () {
-        // TODO: Navigate to chat screen
+        Navigator.push(context, MaterialPageRoute(builder: (context) => ChatDetailScreen(),));
       },
       contentPadding: const EdgeInsets.symmetric(vertical: 6),
       leading: CircleAvatar(

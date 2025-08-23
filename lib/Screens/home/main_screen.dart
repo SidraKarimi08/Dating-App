@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:test123/utils/common/filters.dart';
+import 'package:flutter_card_swiper/flutter_card_swiper.dart';
 
 import '../../Widgets/custom_back_button.dart';
+import 'package:test123/utils/common/filters.dart';
+
+import '../../utils/common/round_action_buttons.dart';
+
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
 
@@ -10,20 +14,13 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  final images = [
+  final List<String> images = [
     'assets/photomain.png',
     'assets/girl1.png',
     'assets/girl2.png',
   ];
 
-  final pc = PageController();
-  int current = 0;
-
-  @override
-  void dispose() {
-    pc.dispose();
-    super.dispose();
-  }
+  final CardSwiperController controller = CardSwiperController();
 
   @override
   Widget build(BuildContext context) {
@@ -33,148 +30,188 @@ class _MainScreenState extends State<MainScreen> {
         child: Column(
           children: [
             const SizedBox(height: 8),
+
             // Top bar
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 12),
-                  child: BackButtonWidget(icon: Icons.arrow_back_ios, onPressed: () {
-                    Navigator.pop(context);
-                  },),
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  child: BackButtonWidget(
+                    icon: Icons.arrow_back_ios,
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                  ),
                 ),
-                Column(
+                const Column(
                   children: [
                     Text(
                       "Discover",
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.w700,
-                      ),
+                      style:
+                      TextStyle(fontSize: 24, fontWeight: FontWeight.w700),
                     ),
                     Text("Chicago, IL", style: TextStyle(fontSize: 12)),
                   ],
                 ),
-                Padding(
+                const Padding(
                   padding: EdgeInsets.symmetric(horizontal: 12),
                   child: FiltersIcon(),
                 ),
               ],
             ),
+
             const SizedBox(height: 12),
 
-            // ---- Flexible swipeable image card (prevents overflow) ----
+            // ---- Tinder Swipe with flutter_card_swiper ----
             Expanded(
               child: Center(
                 child: ConstrainedBox(
                   constraints: const BoxConstraints(maxWidth: 320),
-                  // nice width cap on web
-                  child: AspectRatio(
-                    aspectRatio: 295 / 450, // same shape as before
-                    child: Card(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      clipBehavior: Clip.antiAlias,
-                      child: Stack(
-                        fit: StackFit.expand,
-                        children: [
-                          PageView.builder(
-                            controller: pc,
-                            itemCount: images.length,
-                            onPageChanged: (i) => setState(() => current = i),
-                            itemBuilder: (_, i) => Stack(
-                              fit: StackFit.expand,
-                              children: [
-                                Image.asset(images[i], fit: BoxFit.cover),
-                                // bottom gradient + labels
-                                Align(
-                                  alignment: Alignment.bottomCenter,
-                                  child: Container(
-                                    height: 120,
-                                    decoration: BoxDecoration(
-                                      gradient: LinearGradient(
-                                        begin: Alignment.bottomCenter,
-                                        end: Alignment.topCenter,
-                                        colors: [
-                                          Colors.black.withOpacity(.9),
-                                          Colors.transparent,
-                                        ],
-                                      ),
-                                    ),
-                                    padding: const EdgeInsets.only(
-                                      left: 16,
-                                      right: 16,
-                                      bottom: 16,
-                                    ),
-                                    child: const Align(
-                                      alignment: Alignment.bottomLeft,
-                                      child: Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            "Jessica Parker, 23",
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 22,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                          SizedBox(height: 4),
-                                          Text(
-                                            "Professional model",
-                                            style: TextStyle(
-                                              color: Colors.white70,
-                                              fontSize: 14,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                // distance chip (top-left)
-                                Positioned(
-                                  top: 12,
-                                  left: 12,
-                                  child: Container(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 13,
-                                      vertical: 12,
-                                    ),
-                                    decoration: BoxDecoration(
-                                        color: Colors.grey.shade800.withOpacity(.9),
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                    child: const Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Icon(
-                                          Icons.location_on,
-                                          size: 14,
-                                          color: Colors.white,
-                                        ),
-                                        SizedBox(width: 4),
-                                        Text(
-                                          '1 Km',
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w700,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
+                  child: CardSwiper(
+                    controller: controller,
+                    cardsCount: images.length,
+                    // allow only left/right like Tinder
+                    allowedSwipeDirection: const AllowedSwipeDirection.only(
+                      left: true,
+                      right: true,
+                      up: false,
+                      down: false,
                     ),
+
+                    onSwipe: (previousIndex, currentIndex, direction) {
+                      if (direction == CardSwiperDirection.right) {
+                        debugPrint("Liked ${images[previousIndex]}");
+                      } else if (direction == CardSwiperDirection.left) {
+                        debugPrint("Disliked ${images[previousIndex]}");
+                      }
+                      return true;
+                    },
+
+                    onEnd: () {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text("No more profiles")),
+                      );
+                    },
+
+                    cardBuilder: (context, index, percentX, percentY) {
+                      final img = images[index];
+                      final dx = percentX.abs().clamp(0, 100) / 100.0;
+
+                      return ClipRRect(
+                        borderRadius: BorderRadius.circular(20),
+                        child: Stack(
+                          fit: StackFit.expand,
+                          children: [
+                            Image.asset(img, fit: BoxFit.cover),
+
+                            // Like/Nope overlay
+                            if (percentX != 0)
+                              Align(
+                                alignment: percentX > 0
+                                    ? Alignment.topRight
+                                    : Alignment.topLeft,
+                                child: Opacity(
+                                  opacity: dx,
+                                  child: Container(
+                                    margin: const EdgeInsets.all(16),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 14, vertical: 8),
+                                    decoration: BoxDecoration(
+                                      color: percentX > 0
+                                          ? Colors.green.withOpacity(0.85)
+                                          : Colors.red.withOpacity(0.85),
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    child: Text(
+                                      percentX > 0 ? 'LIKE' : 'NOPE',
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w800,
+                                        letterSpacing: 1.2,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+
+                            // bottom gradient + labels
+                            Align(
+                              alignment: Alignment.bottomCenter,
+                              child: Container(
+                                height: 120,
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    begin: Alignment.bottomCenter,
+                                    end: Alignment.topCenter,
+                                    colors: [
+                                      Colors.black.withOpacity(.9),
+                                      Colors.transparent,
+                                    ],
+                                  ),
+                                ),
+                                padding: const EdgeInsets.only(
+                                    left: 16, right: 16, bottom: 16),
+                                child: const Align(
+                                  alignment: Alignment.bottomLeft,
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    crossAxisAlignment:
+                                    CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "Jessica Parker, 23",
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 22,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      SizedBox(height: 4),
+                                      Text(
+                                        "Professional model",
+                                        style: TextStyle(
+                                            color: Colors.white70,
+                                            fontSize: 14),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+
+                            // distance chip
+                            Positioned(
+                              top: 12,
+                              left: 12,
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 13, vertical: 10),
+                                decoration: BoxDecoration(
+                                  color: Colors.black.withOpacity(.55),
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: const Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(Icons.location_on,
+                                        size: 14, color: Colors.white),
+                                    SizedBox(width: 4),
+                                    Text('1 Km',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w700,
+                                        )),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
                   ),
                 ),
               ),
@@ -182,36 +219,32 @@ class _MainScreenState extends State<MainScreen> {
 
             const SizedBox(height: 12),
 
-            // bottom buttons (prev / like / next)
+            // Bottom buttons
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 8),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  _roundBtn(
+                  RoundActionButton(
                     icon: Icons.close,
                     color: Colors.red,
-                    onTap: () => pc.previousPage(
-                      duration: const Duration(milliseconds: 200),
-                      curve: Curves.easeOut,
-                    ),
+                    onTap: () => controller.swipe(CardSwiperDirection.left),
                   ),
-                  _roundBtn(
+                  RoundActionButton(
                     icon: Icons.favorite,
                     color: Colors.white,
                     bg: Colors.amber,
                     size: 77,
                     iconSize: 34,
-                    onTap: () => pc.nextPage(
-                      duration: const Duration(milliseconds: 200),
-                      curve: Curves.easeOut,
-                    ),
+                    onTap: () => controller.swipe(CardSwiperDirection.right),
                   ),
-                  _roundBtn(
+                  RoundActionButton(
                     icon: Icons.star,
                     color: Colors.purple,
                     onTap: () {},
                   ),
+
+
                 ],
               ),
             ),
@@ -220,33 +253,6 @@ class _MainScreenState extends State<MainScreen> {
       ),
     );
   }
-
-  Widget _roundBtn({
-    required IconData icon,
-    required Color color,
-    Color bg = Colors.white,
-    double size = 68,
-    double iconSize = 20,
-    required VoidCallback onTap,
-  }) {
-    return InkResponse(
-      onTap: onTap,
-      child: Container(
-        width: size,
-        height: size,
-        decoration: BoxDecoration(
-          color: bg,
-          shape: BoxShape.circle,
-          boxShadow: const [
-            BoxShadow(
-              color: Colors.black12,
-              blurRadius: 6,
-              offset: Offset(0, 3),
-            ),
-          ],
-        ),
-        child: Icon(icon, color: color, size: iconSize),
-      ),
-    );
-  }
 }
+
+

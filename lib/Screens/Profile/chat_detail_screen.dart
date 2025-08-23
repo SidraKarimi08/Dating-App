@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'message_screen.dart';
+
 class ChatDetailScreen extends StatelessWidget {
   const ChatDetailScreen({super.key});
 
@@ -37,7 +39,7 @@ class ChatDetailScreen extends StatelessWidget {
                   const SizedBox(width: 12),
                   const CircleAvatar(
                     radius: 22,
-                    backgroundImage: AssetImage('assets/home5.png'), // Grace
+                    backgroundImage: AssetImage("assets/pic4.png"), // Grace
                   ),
                   const SizedBox(width: 12),
                   Column(
@@ -85,43 +87,45 @@ class ChatDetailScreen extends StatelessWidget {
             ),
 
             // Messages
-            Expanded(
-              child: ListView(
-                padding:
-                const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                children: const [
-                  _Bubble(
-                    text:
-                    "Hi Jake, how are you? I saw on the app that we've crossed paths several times this week 😄",
-                    time: "2:55 PM",
-                    isMe: false,
-                    highlighted: true, // pale yellow
-                  ),
-                  SizedBox(height: 14),
-                  _Bubble(
-                    text:
-                    "Haha truly! Nice to meet you Grace! What about a cup of coffee today evening? ☕",
-                    time: "3:02 PM",
-                    isMe: true,
-                    delivered: true,
-                  ),
-                  SizedBox(height: 14),
-                  _Bubble(
-                    text: "Sure, let's do it! 😊",
-                    time: "3:10 PM",
-                    isMe: false,
-                  ),
-                  SizedBox(height: 14),
-                  _Bubble(
-                    text:
-                    "Great! I will write later the exact time and place. See you soon!",
-                    time: "3:12 PM",
-                    isMe: true,
-                    delivered: true,
-                  ),
-                ],
+
+               Expanded(
+                child: ListView(
+                  padding:
+                  const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                  children: const [
+                    _Bubble(
+                      text:
+                      "Hi Jake, how are you? I saw on the app that we've crossed paths several times this week 😄",
+                      time: "2:55 PM",
+                      isMe: false,
+                      highlighted: true, // pale yellow
+                    ),
+                    SizedBox(height: 14),
+                    _Bubble(
+                      text:
+                      "Haha truly! Nice to meet you Grace! What about a cup of coffee today evening? ☕",
+                      time: "3:02 PM",
+                      isMe: true,
+                      delivered: true,
+                    ),
+                    SizedBox(height: 14),
+                    _Bubble(
+                      text: "Sure, let's do it! 😊",
+                      time: "3:10 PM",
+                      isMe: false,
+                    ),
+                    SizedBox(height: 14),
+                    _Bubble(
+                      text:
+                      "Great! I will write later the exact time and place. See you soon!",
+                      time: "3:12 PM",
+                      isMe: true,
+                      delivered: true,
+                    ),
+                  ],
+                ),
               ),
-            ),
+
 
             // Input bar
             Padding(
